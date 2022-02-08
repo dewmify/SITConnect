@@ -41,6 +41,7 @@
 
         }
     </script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdU9mIeAAAAAA8K3u4iFM84VK0oXqhmDfXcQ53p"></script>
 </head>
 <body>
     <nav class="navbar navbar-inverse">  
@@ -61,25 +62,35 @@
                 <td class="auto-style2">First Name</td>
                 <td>
                     <asp:TextBox ID="tb_fname" runat="server"></asp:TextBox>
+                    <br />
+                    <asp:RequiredFieldValidator ID="fname_validator" runat="server" ControlToValidate="tb_fname" ErrorMessage="Enter your first name" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
             </tr>
             <tr>
                 <td class="auto-style2">Last Name</td>
                 <td>
                     <asp:TextBox ID="tb_lname" runat="server"></asp:TextBox>
+                    <br />
+                    <asp:RequiredFieldValidator ID="lname_validator" runat="server" ControlToValidate="tb_lname" ErrorMessage="Enter your last name" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
+                
             </tr>
             <tr>
                 <td class="auto-style2">Credit Card Info</td>
                 <td>
                     <asp:TextBox ID="tb_creditcard" runat="server"></asp:TextBox>
-                </td>
+                    <br />
+                <asp:RequiredFieldValidator ID="creditcard_validator" runat="server" ControlToValidate="tb_creditcard" ErrorMessage="Enter your credit card details" ForeColor="Red"></asp:RequiredFieldValidator>
+                </td> 
             </tr>
             <tr>
                 <td class="auto-style2">Email address</td>
                 <td>
-                    <asp:TextBox ID="tb_email" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="tb_email" runat="server"></asp:TextBox>   
+                 <br />
+                <asp:RequiredFieldValidator ID="email_validator" runat="server" ControlToValidate="tb_email" ErrorMessage="Enter your email" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
+                
             </tr>
             <tr>
                 <td class="auto-style2">Password</td>
@@ -94,8 +105,11 @@
             <tr>
                 <td class="auto-style2">Date of Birth</td>
                 <td>
-                    <asp:TextBox ID="tb_dob" runat="server" type="date" placeholder="mm/dd/yyyy"></asp:TextBox>
+                    <asp:TextBox ID="tb_dob" runat="server" type="date"></asp:TextBox>
+                    <br />
+                <asp:RequiredFieldValidator ID="dob_validator" runat="server" ControlToValidate="tb_dob" ErrorMessage="Enter your date of birth" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
+                
             </tr>
             <tr>
                 <td class="auto-style2">Upload Photo</td>
@@ -107,24 +121,6 @@
                 </td>
             </tr>
             <tr>
-            <td>Verification Code</td>
-            <td>
-                <asp:Image ID="Image2" runat="server" Height="55px" ImageUrl="~/Captcha.aspx" Width="186px" />
-                <br />
-                <asp:Label runat="server" ID="lblCaptchaMessage">
-                </asp:Label>
-            </td>
-        </tr>
-
-        <tr>
-            <td>Enter Verification Code</td>
-            <td>
-                <asp:TextBox runat="server" ID="txtVerificationCode">
-                </asp:TextBox>
-            </td>
-        </tr>
-
-            <tr>
                 <td class="auto-style2">&nbsp;</td>
                 <td>
                     <asp:Button ID="submit" runat="server" Text="Submit" Width="185px" />
@@ -132,5 +128,13 @@
             </tr>
         </table>
     </form>
+    
+    <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('6LdU9mIeAAAAAA8K3u4iFM84VK0oXqhmDfXcQ53p', { action: 'Register' }).then(function (token) {
+                document.getElementById("g-recaptcha-response").value = token;
+            });
+        });
+    </script>
 </body>
 </html>

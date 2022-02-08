@@ -75,6 +75,11 @@
     <Content Include="css\homepage.css" />
     <Content Include="css\login.css" />
     <Content Include="css\registration.css" />
+    <Content Include="CustomErrorPages\error.html" />
+    <Content Include="CustomErrorPages\error403.css" />
+    <Content Include="CustomErrorPages\Error403.html" />
+    <Content Include="CustomErrorPages\error404.css" />
+    <Content Include="CustomErrorPages\Error404.html" />
     <Content Include="HomePage.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Registration.aspx" />
@@ -120,6 +125,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

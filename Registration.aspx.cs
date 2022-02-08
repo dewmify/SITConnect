@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -59,6 +60,8 @@ namespace AppSecAsgn
                     {
                         using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
+                            //DateTime dob = DateTime.ParseExact(tb_dob.Text.Trim(), "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@FirstName", tb_fname.Text.Trim());
                             cmd.Parameters.AddWithValue("@LastName", tb_lname.Text.Trim());

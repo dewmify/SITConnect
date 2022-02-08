@@ -33,6 +33,15 @@ namespace AppSecAsgn
         protected global::System.Web.UI.WebControls.TextBox tb_fname;
 
         /// <summary>
+        /// fname_validator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator fname_validator;
+
+        /// <summary>
         /// tb_lname control.
         /// </summary>
         /// <remarks>
@@ -40,6 +49,15 @@ namespace AppSecAsgn
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox tb_lname;
+
+        /// <summary>
+        /// lname_validator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator lname_validator;
 
         /// <summary>
         /// tb_creditcard control.
@@ -51,6 +69,15 @@ namespace AppSecAsgn
         protected global::System.Web.UI.WebControls.TextBox tb_creditcard;
 
         /// <summary>
+        /// creditcard_validator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator creditcard_validator;
+
+        /// <summary>
         /// tb_email control.
         /// </summary>
         /// <remarks>
@@ -58,6 +85,15 @@ namespace AppSecAsgn
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox tb_email;
+
+        /// <summary>
+        /// email_validator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator email_validator;
 
         /// <summary>
         /// tb_pwd control.
@@ -96,6 +132,15 @@ namespace AppSecAsgn
         protected global::System.Web.UI.WebControls.TextBox tb_dob;
 
         /// <summary>
+        /// dob_validator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator dob_validator;
+
+        /// <summary>
         /// oFile control.
         /// </summary>
         /// <remarks>
@@ -121,33 +166,6 @@ namespace AppSecAsgn
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUploadResult;
-
-        /// <summary>
-        /// Image2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image Image2;
-
-        /// <summary>
-        /// lblCaptchaMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCaptchaMessage;
-
-        /// <summary>
-        /// txtVerificationCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtVerificationCode;
 
         /// <summary>
         /// submit control.
