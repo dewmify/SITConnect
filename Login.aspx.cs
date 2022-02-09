@@ -20,7 +20,6 @@ namespace AppSecAsgn
 
         string MYDBConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
         static string rndNumber;
-        //Log log = new Log();
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -147,14 +146,13 @@ namespace AppSecAsgn
 
                                 SendVCode(rndNumber);
 
-
+                                
                                 Response.Redirect("Verify.aspx", false);
                             }
                             else
                             {
                                 lblMessage.Text = "Invalid login details";
 
-                                //log.logged(userid, "Login Failed >:(");
                             }
                         }
                     }
@@ -300,5 +298,6 @@ namespace AppSecAsgn
                 throw ex;
             }
         }
+
     }
 }

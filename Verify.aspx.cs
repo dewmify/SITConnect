@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -57,11 +58,44 @@ namespace AppSecAsgn
         {
             if(tb_vfCode.Text.ToString() == vCodeOTP(Session["LoggedIn"].ToString()))
             {
+                LoginAuditLog();
+                
                 Response.Redirect("Homepage.aspx", false);
+
             }
             else
             {
                 lblMessage.Text = "Verification code is incorrect";
+            }
+        }
+
+        protected void LoginAuditLog()
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(MYDBConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("insert into AuditLogs values(@DateAndTime, @UserLog, @ActionLog)"))
+                    {
+                        using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter())
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@DateAndTime", DateTime.Now);
+                            cmd.Parameters.AddWithValue("@UserLog", Session["LoggedIn"].ToString());
+                            cmd.Parameters.AddWithValue("@ActionLog", "Has Successfully logged into account".ToString());
+
+                            cmd.Connection = con;
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
             }
         }
     }
