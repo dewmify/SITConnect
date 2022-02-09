@@ -105,33 +105,32 @@ namespace AppSecAsgn
 
             try
             {
-               /* if (ValidateCaptcha())
-                {*/
-                    string pwdAndSalt = pwd + dbSalt;
-                    byte[] hashAndSalt = hashing.ComputeHash(Encoding.UTF8.GetBytes(pwdAndSalt));
-                    string userHash = Convert.ToBase64String(hashAndSalt);
+                string pwdAndSalt = pwd + dbSalt;
+                byte[] hashAndSalt = hashing.ComputeHash(Encoding.UTF8.GetBytes(pwdAndSalt));
+                string userHash = Convert.ToBase64String(hashAndSalt);
 
-                    DataSet dataSet = new DataSet();
+                DataSet dataSet = new DataSet();
 
-                    SqlConnection connection = new SqlConnection(MYDBConnectionString);
-                    string sql = "Select * from Accounts Where [Email]='"
-                        + email
-                        + "' and [StatusId] = 1;";
+                SqlConnection connection = new SqlConnection(MYDBConnectionString);
+                string sql = "Select * from Accounts Where [Email]='"
+                    + email
+                    + "' and [StatusId] = 1;";
 
-                    connection.Open();
+                connection.Open();
 
-                    SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, connection);
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, connection);
 
-                    dataAdapter.Fill(dataSet);
-                    connection.Close();
+                dataAdapter.Fill(dataSet);
+                connection.Close();
 
-                    if (dataSet.Tables[0].Rows.Count > 0)
+                if (dataSet.Tables[0].Rows.Count > 0)
+                {
+                    if (ValidateCaptcha())
                     {
                         if (dbSalt != null && dbSalt.Length > 0 && dbHash != null && dbHash.Length > 0)
                         {
                             if (userHash == dbHash)
                             {
-
                                 Session["LoginCount"] = 0;
                                 Session["LoggedIn"] = tb_email.Text.Trim();
 
@@ -146,7 +145,7 @@ namespace AppSecAsgn
 
                                 SendVCode(rndNumber);
 
-                                
+
                                 Response.Redirect("Verify.aspx", false);
                             }
                             else
@@ -156,19 +155,19 @@ namespace AppSecAsgn
                             }
                         }
                     }
+                }
+                else
+                {
+                    Session["LoginCount"] = Convert.ToInt32(Session["LoginCount"]) + 1;
+                    if (Convert.ToInt32(Session["LoginCount"]) > 3)
+                    {
+                        lblMessage.Text = DeactivateAccount();
+                    }
                     else
                     {
-                        Session["LoginCount"] = Convert.ToInt32(Session["LoginCount"]) + 1;
-                        if (Convert.ToInt32(Session["LoginCount"]) > 3)
-                        {
-                            lblMessage.Text = DeactivateAccount();
-                        }
-                        else
-                        {
-                            lblMessage.Text = "Invalid Login Details";
-                        }
+                        lblMessage.Text = "Invalid Login Details";
                     }
-                
+                }
             }
             catch (Exception ex)
             {
