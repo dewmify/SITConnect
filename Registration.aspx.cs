@@ -51,6 +51,8 @@ namespace AppSecAsgn
 
             createAccount();
 
+            RegisterLog();
+
             Response.Redirect("Login.aspx");
         }
 
@@ -233,6 +235,36 @@ namespace AppSecAsgn
             catch(WebException ex)
             {
                 throw ex;
+            }
+        }
+
+        protected void RegisterLog()
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(MYDBConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("insert into AuditLogs values(@DateAndTime, @UserLog, @ActionLog)"))
+                    {
+                        using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter())
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@DateAndTime", DateTime.Now);
+                            cmd.Parameters.AddWithValue("@UserLog", tb_email.ToString());
+                            cmd.Parameters.AddWithValue("@ActionLog", "Has Successfully registered an account".ToString());
+
+                            cmd.Connection = con;
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
             }
         }
 
