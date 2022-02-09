@@ -37,24 +37,39 @@ namespace AppSecAsgn
                 Response.Redirect("Login.aspx", false);
             }
 
-        } 
-        
+        }
+
         protected void OnChangingPassword(object sender, LoginCancelEventArgs e)
         {
             if (!changePwd.CurrentPassword.Equals(changePwd.NewPassword, StringComparison.CurrentCultureIgnoreCase))
             {
                 int rowsAffected = 0;
-                string sql = "Update [Accounts] Set [Password] = @NewPassword Where [Email] = @Username and [Password] = @CurrentPassword";
-                
-                using(SqlConnection con = new SqlConnection(MYDBConnectionString))
+                string sql = "Update [Accounts] Set [PasswordHash] = @PasswordHash, [PasswordSalt] = @PasswordSalt Where [Email] = @EMAIL";
+
+                using (SqlConnection con = new SqlConnection(MYDBConnectionString))
                 {
-                    using(SqlCommand cmd = new SqlCommand(sql))
+                    using (SqlCommand cmd = new SqlCommand(sql))
                     {
                         using (SqlDataAdapter dataAdapter = new SqlDataAdapter())
                         {
-                            cmd.Parameters.AddWithValue("@Username", Session["LoggedIn"].ToString());
-                            cmd.Parameters.AddWithValue("@CurrentPassword", changePwd.CurrentPassword);
-                            cmd.Parameters.AddWithValue("@NewPassword", changePwd.NewPassword);
+                            string pwd = changePwd.NewPassword.ToString();
+
+                            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                            byte[] saltByte = new byte[8];
+
+                            rng.GetBytes(saltByte);
+                            salt = Convert.ToBase64String(saltByte);
+                            SHA512Managed hashing = new SHA512Managed();
+                            string pwdWithSalt = pwd + salt;
+                            byte[] plainHash = hashing.ComputeHash(Encoding.UTF8.GetBytes(pwd));
+                            byte[] hashWithSalt = hashing.ComputeHash(Encoding.UTF8.GetBytes(pwdWithSalt));
+                            finalHash = Convert.ToBase64String(hashWithSalt);
+
+
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@EMAIL", Session["LoggedIn"].ToString());
+                            cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
+                            cmd.Parameters.AddWithValue("@PasswordSalt", salt);
 
                             cmd.Connection = con;
                             con.Open();
@@ -67,7 +82,6 @@ namespace AppSecAsgn
                         lblMessage.ForeColor = Color.Green;
                         lblMessage.Text = "Password has been successfully!";
 
-                        hashNewPwd(Session["LoggedIn"].ToString());
                         ChangePasswordAuditLog();
                     }
                     else
@@ -115,40 +129,74 @@ namespace AppSecAsgn
             }
         }
 
-        protected void hashNewPwd(string email)
+        protected string getDBHash(string userid)
         {
-            using (SqlConnection con = new SqlConnection(MYDBConnectionString))
+            string h = null;
+            SqlConnection connection = new SqlConnection(MYDBConnectionString);
+            string sql = "select PasswordHash FROM Accounts WHERE Email=@USERID";
+            SqlCommand command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@USERID", userid);
+            try
             {
-                string sql = "update [Accounts] set [PasswordHash] = @PasswordHash, [PasswordSalt] = @PasswordSalt where Email = @EMAIL";
-                using (SqlCommand cmd = new SqlCommand(sql))
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter())
+
+                    while (reader.Read())
                     {
-                        string pwd = changePwd.NewPassword.ToString();
-                        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-                        byte[] saltByte = new byte[8];
+                        if (reader["PasswordHash"] != null)
+                        {
 
-                        rng.GetBytes(saltByte);
-                        salt = Convert.ToBase64String(saltByte);
-                        SHA512Managed hash = new SHA512Managed();
-                        string newPwdWithSalt = pwd + salt;
-                        byte[] plainHash = hash.ComputeHash(Encoding.UTF8.GetBytes(pwd));
-                        byte[] hashWithSalt = hash.ComputeHash(Encoding.UTF8.GetBytes(newPwdWithSalt));
-                        finalHash = Convert.ToBase64String(hashWithSalt);
+                            if (reader["PasswordHash"] != DBNull.Value)
+                            {
+                                h = reader["PasswordHash"].ToString();
+                            }
+                        }
+                    }
 
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
-                        cmd.Parameters.AddWithValue("@PasswordSalt", salt);
-                        cmd.Parameters.AddWithValue("@EMAIL", email);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+            finally { connection.Close(); }
+            return h;
+        }
 
-                        cmd.Connection = con;
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                        con.Close();
-
+        protected string getDBSalt(string userid)
+        {
+            string s = null;
+            SqlConnection connection = new SqlConnection(MYDBConnectionString);
+            string sql = "select PASSWORDSALT FROM ACCOUNTS WHERE Email=@USERID";
+            SqlCommand command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@USERID", userid);
+            try
+            {
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader["PASSWORDSALT"] != null)
+                        {
+                            if (reader["PASSWORDSALT"] != DBNull.Value)
+                            {
+                                s = reader["PASSWORDSALT"].ToString();
+                            }
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return s;
         }
     }
 }

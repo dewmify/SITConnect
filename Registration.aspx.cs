@@ -62,7 +62,7 @@ namespace AppSecAsgn
             {
                 using (SqlConnection con = new SqlConnection(MYDBConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Accounts VALUES(@FirstName, @LastName, @CreditCard, @Email, @DOB, @Password, @PasswordHash, @PasswordSalt, @IV, @Key, @StatusId, @Verification )"))
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Accounts VALUES(@FirstName, @LastName, @CreditCard, @Email, @DOB, @PasswordHash, @PasswordSalt, @IV, @Key, @Verification, @LoginAttempts, @LockoutDateTime )"))
                     {
                         using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
@@ -73,13 +73,13 @@ namespace AppSecAsgn
                             cmd.Parameters.AddWithValue("@CreditCard", Convert.ToBase64String(encryptData(tb_creditcard.Text.Trim())));
                             cmd.Parameters.AddWithValue("@Email", tb_email.Text.Trim());
                             cmd.Parameters.AddWithValue("@DOB", tb_dob.Text.Trim());
-                            cmd.Parameters.AddWithValue("@Password", tb_pwd.Text.Trim());
                             cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
                             cmd.Parameters.AddWithValue("@PasswordSalt", salt);
                             cmd.Parameters.AddWithValue("@IV", Convert.ToBase64String(IV));
                             cmd.Parameters.AddWithValue("@Key", Convert.ToBase64String(Key));
-                            cmd.Parameters.AddWithValue("@StatusId", 1);
                             cmd.Parameters.AddWithValue("@Verification", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@LoginAttempts", 0);
+                            cmd.Parameters.AddWithValue("@LockoutDateTime", DBNull.Value);
 
                             cmd.Connection = con;
                             con.Open();

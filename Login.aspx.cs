@@ -20,6 +20,8 @@ namespace AppSecAsgn
 
         string MYDBConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MyDBConnection"].ConnectionString;
         static string rndNumber;
+        int loginAttempts = 0;
+        DateTime lockoutDateTime;
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -103,6 +105,15 @@ namespace AppSecAsgn
             string dbHash = getDBHash(email);
             string dbSalt = getDBSalt(email);
 
+
+            getLockoutDateTime(email);
+            getLoginAttempts(email);
+
+            TimeSpan timeDiff = DateTime.Now.Subtract(lockoutDateTime);
+            Int32 minLocked = Convert.ToInt32(timeDiff.TotalMinutes);
+            Int32 minLeft = 20 - minLocked;
+
+
             try
             {
                 string pwdAndSalt = pwd + dbSalt;
@@ -112,9 +123,7 @@ namespace AppSecAsgn
                 DataSet dataSet = new DataSet();
 
                 SqlConnection connection = new SqlConnection(MYDBConnectionString);
-                string sql = "Select * from Accounts Where [Email]='"
-                    + email
-                    + "' and [StatusId] = 1;";
+                string sql = "Select * from Accounts Where [Email]='"+ email + "'";
 
                 connection.Open();
 
@@ -129,9 +138,8 @@ namespace AppSecAsgn
                     {
                         if (dbSalt != null && dbSalt.Length > 0 && dbHash != null && dbHash.Length > 0)
                         {
-                            if (userHash == dbHash)
+                            if (userHash == dbHash && minLeft <= 0)
                             {
-                                Session["LoginCount"] = 0;
                                 Session["LoggedIn"] = tb_email.Text.Trim();
 
                                 string guid = Guid.NewGuid().ToString();
@@ -145,27 +153,40 @@ namespace AppSecAsgn
 
                                 SendVCode(rndNumber);
 
+                                updateLoginAttempts(tb_email.Text, 0);
+                                setLockoutDateTime(tb_email.Text, DateTime.Parse("2003 - 04 - 11 00:00:00"));
+
 
                                 Response.Redirect("Verify.aspx", false);
                             }
                             else
                             {
-                                lblMessage.Text = "Invalid login details";
+                                loginAttempts += 1;
+                                updateLoginAttempts(tb_email.Text.Trim(), loginAttempts);
 
+                                if (minLeft > 0)
+                                {
+                                    lblMessage.Text = "You are still locked out, try again later in " + minLeft.ToString() + " minutes";
+
+                                }
+                                else
+                                {
+                                    switch (loginAttempts)
+                                    {
+                                        case 1:
+                                            lblMessage.Text = "Invalid login details. 2 login attempts remaining.";
+                                            break;
+                                        case 2:
+                                            lblMessage.Text = "Invalid login details. 1 login attempt remaining.";
+                                            break;
+                                        case 3:
+                                            setLockoutDateTime(tb_email.Text.Trim(), DateTime.Now);
+                                            lblMessage.Text = "Too many attempts. You have been locked out, try again later in " + minLeft.ToString() + " minutes";
+                                            break;
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-                else
-                {
-                    Session["LoginCount"] = Convert.ToInt32(Session["LoginCount"]) + 1;
-                    if (Convert.ToInt32(Session["LoginCount"]) > 3)
-                    {
-                        lblMessage.Text = DeactivateAccount();
-                    }
-                    else
-                    {
-                        lblMessage.Text = "Invalid Login Details";
                     }
                 }
             }
@@ -173,32 +194,6 @@ namespace AppSecAsgn
             {
                 throw new Exception(ex.ToString());
             }
-        }
-
-        private string DeactivateAccount()
-        {
-
-            DataSet dataSet = new DataSet();
-            string pwd = tb_pwd.Text.ToString().Trim();
-            string email = tb_email.Text.ToString().Trim();
-            SqlConnection connection = new SqlConnection(MYDBConnectionString);
-            string sql = "Select * from Accounts Where [Email]='"
-                + email
-                + "';Update Accounts set StatusId = 0 Where [Email]='"
-                + email
-                + "';";
-            connection.Open();
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, connection);
-            dataAdapter.Fill(dataSet);
-            if(dataSet.Tables[0].Rows.Count > 0)
-            {
-                return "Your Account has been locked, contact an admin to retrieve your account.";
-            }
-            else
-            {
-                return "Entered user id does not belong to this application";
-            }
-            connection.Close();
         }
 
         protected string createOTP(string userid, string rndNumber)
@@ -298,5 +293,106 @@ namespace AppSecAsgn
             }
         }
 
+        protected void updateLoginAttempts(string email, int loginAttempts)
+        {
+            using(SqlConnection con = new SqlConnection(MYDBConnectionString))
+            {
+                string sql = "update [Accounts] set [LoginAttempts] = @LoginAttempts where [Email] = @EMAIL";
+                using (SqlCommand cmd = new SqlCommand(sql))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@LoginAttempts", loginAttempts);
+                    cmd.Parameters.AddWithValue("@EMAIL", email);
+
+                    cmd.Connection = con;
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+        }
+
+        protected void setLockoutDateTime(string email, DateTime lockoutTime)
+        {
+            using (SqlConnection con = new SqlConnection(MYDBConnectionString))
+            {
+                string sql = "update [Accounts] set [LockoutDateTime] = @LockoutDateTime where [Email] = @EMAIL";
+                using (SqlCommand cmd = new SqlCommand(sql))
+                {
+                    using(SqlDataAdapter sqlDataAdapter = new SqlDataAdapter())
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@LockoutDateTime", lockoutTime);
+                        cmd.Parameters.AddWithValue("@EMAIL", email);
+
+                        cmd.Connection = con;
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+            }
+        }
+
+        protected void getLockoutDateTime(string email)
+        {
+            SqlConnection con = new SqlConnection(MYDBConnectionString);
+            string sql = "select [LockoutDateTime] from [Accounts] where [Email] = @EMAIL";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@EMAIL", email);
+            try
+            {
+                con.Open();
+                using(SqlDataReader sqlDataReader = cmd.ExecuteReader())
+                {
+                    while(sqlDataReader.Read())
+                    {
+                        if(sqlDataReader["LockoutDateTime"] != DBNull.Value)
+                        {
+                            lockoutDateTime = (DateTime)sqlDataReader["LockoutDateTime"];
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        protected string getLoginAttempts(string email)
+        {
+            string h = null;
+            SqlConnection con = new SqlConnection(MYDBConnectionString);
+            string sql = "select LoginAttempts from Accounts where Email = @EMAIL";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@EMAIL", email);
+            try
+            {
+                con.Open();
+                using(SqlDataReader sqlDataReader = cmd.ExecuteReader())
+                {
+                    while (sqlDataReader.Read())
+                    {
+                        if(sqlDataReader["LoginAttempts"] != DBNull.Value)
+                        {
+                            loginAttempts = (int)sqlDataReader["LoginAttempts"];
+
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+            finally { con.Close(); }
+            return h;
+        }
     }
 }
