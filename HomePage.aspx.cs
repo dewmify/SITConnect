@@ -28,6 +28,19 @@ namespace AppSecAsgn
             Session.Clear();
             Session.Abandon();
             Session.RemoveAll();
+            Response.Redirect("Login.aspx", false);
+
+            if (Request.Cookies["ASP.NET_SessionId"] != null)
+            {
+                Request.Cookies["ASP.NET_SessionId"].Value = string.Empty;
+                Request.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddMonths(-20);
+            }
+
+            if (Request.Cookies["AuthToken"] != null)
+            {
+                Request.Cookies["AuthToken"].Value = string.Empty;
+                Request.Cookies["AuthToken"].Expires = DateTime.Now.AddMonths(-20);
+            }
         }
     }
 }

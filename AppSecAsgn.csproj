@@ -71,10 +71,12 @@
     <Content Include="App_Data\MainDB_log.ldf">
       <DependentUpon>MainDB.mdf</DependentUpon>
     </Content>
-    <Content Include="Captcha.aspx" />
+    <Content Include="ChangePassword.aspx" />
+    <Content Include="css\changepassword.css" />
     <Content Include="css\homepage.css" />
     <Content Include="css\login.css" />
     <Content Include="css\registration.css" />
+    <Content Include="css\verification.css" />
     <Content Include="CustomErrorPages\error.html" />
     <Content Include="CustomErrorPages\error403.css" />
     <Content Include="CustomErrorPages\Error403.html" />
@@ -83,15 +85,16 @@
     <Content Include="HomePage.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Registration.aspx" />
+    <Content Include="Verify.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Captcha.aspx.cs">
-      <DependentUpon>Captcha.aspx</DependentUpon>
+    <Compile Include="ChangePassword.aspx.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Captcha.aspx.designer.cs">
-      <DependentUpon>Captcha.aspx</DependentUpon>
+    <Compile Include="ChangePassword.aspx.designer.cs">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
     </Compile>
     <Compile Include="HomePage.aspx.cs">
       <DependentUpon>HomePage.aspx</DependentUpon>
@@ -114,6 +117,13 @@
     </Compile>
     <Compile Include="Registration.aspx.designer.cs">
       <DependentUpon>Registration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Verify.aspx.cs">
+      <DependentUpon>Verify.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Verify.aspx.designer.cs">
+      <DependentUpon>Verify.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

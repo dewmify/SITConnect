@@ -5,16 +5,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>SITConnect</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">  
-    <link rel="stylesheet" href="~/css/homepage.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>  
+    <link rel="stylesheet" href="~/css/homepage.css"/>
 </head>
 <body>
     <nav class="navbar navbar-inverse">  
         <div class="container-fluid">  
             <ul class="nav navbar-nav">  
                 <li class="active"><a href="/HomePage.aspx">SITConnect</a></li>  
-                <li style="float:right"><a href="/Login.aspx">Login</a></li>
-                <li style="float:right"><a href="/Registration.aspx">Register</a></li>
+                <li style="float:right"><a href="/ChangePassword.aspx">Change Password</a></li>
             </ul>  
         </div>  
     </nav>

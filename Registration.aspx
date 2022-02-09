@@ -5,8 +5,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">  
-    <link rel="stylesheet" href="~/css/registration.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>  
+    <link rel="stylesheet" href="~/css/registration.css"/>
     <script type ="text/javascript">
         function validate() {
             var str = document.getElementById('<%=tb_pwd.ClientID%>').value;
@@ -41,7 +41,6 @@
 
         }
     </script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdU9mIeAAAAAA8K3u4iFM84VK0oXqhmDfXcQ53p"></script>
 </head>
 <body>
     <nav class="navbar navbar-inverse">  

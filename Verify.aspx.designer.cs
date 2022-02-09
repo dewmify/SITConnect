@@ -11,7 +11,7 @@ namespace AppSecAsgn
 {
 
 
-    public partial class Login
+    public partial class Verify
     {
 
         /// <summary>
@@ -24,22 +24,13 @@ namespace AppSecAsgn
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// tb_email control.
+        /// tb_vfCode control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox tb_email;
-
-        /// <summary>
-        /// tb_pwd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox tb_pwd;
+        protected global::System.Web.UI.WebControls.TextBox tb_vfCode;
 
         /// <summary>
         /// btnSubmit control.

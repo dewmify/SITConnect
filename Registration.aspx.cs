@@ -6,10 +6,13 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -46,8 +49,9 @@ namespace AppSecAsgn
             Key = cipher.Key;
             IV = cipher.IV;
 
-
             createAccount();
+
+            Response.Redirect("Login.aspx");
         }
 
         protected void createAccount()
@@ -56,22 +60,24 @@ namespace AppSecAsgn
             {
                 using (SqlConnection con = new SqlConnection(MYDBConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Accounts VALUES(@FirstName, @LastName, @CreditCard, @Email, @DOB, @PasswordHash, @PasswordSalt, @IV, @Key )"))
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Accounts VALUES(@FirstName, @LastName, @CreditCard, @Email, @DOB, @Password, @PasswordHash, @PasswordSalt, @IV, @Key, @StatusId, @Verification )"))
                     {
                         using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
-                            //DateTime dob = DateTime.ParseExact(tb_dob.Text.Trim(), "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@FirstName", tb_fname.Text.Trim());
                             cmd.Parameters.AddWithValue("@LastName", tb_lname.Text.Trim());
-                            cmd.Parameters.AddWithValue("@CreditCard", tb_creditcard.Text.Trim());
+                            cmd.Parameters.AddWithValue("@CreditCard", Convert.ToBase64String(encryptData(tb_creditcard.Text.Trim())));
                             cmd.Parameters.AddWithValue("@Email", tb_email.Text.Trim());
                             cmd.Parameters.AddWithValue("@DOB", tb_dob.Text.Trim());
+                            cmd.Parameters.AddWithValue("@Password", tb_pwd.Text.Trim());
                             cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
                             cmd.Parameters.AddWithValue("@PasswordSalt", salt);
                             cmd.Parameters.AddWithValue("@IV", Convert.ToBase64String(IV));
                             cmd.Parameters.AddWithValue("@Key", Convert.ToBase64String(Key));
+                            cmd.Parameters.AddWithValue("@StatusId", 1);
+                            cmd.Parameters.AddWithValue("@Verification", DBNull.Value);
 
                             cmd.Connection = con;
                             con.Open();
@@ -190,5 +196,45 @@ namespace AppSecAsgn
             this.submit.Click += new System.EventHandler(this.btn_Submit_Click);
             this.Load += new System.EventHandler(this.Page_Load);
         }
+
+        public class MyObject
+        {
+            public string success { get; set; }
+            public List<string> ErrorMessage { get; set; }
+        }
+
+        public bool ValidateCaptcha()
+        {
+            bool result = true;
+
+            string response = Request.Form["g-recaptcha-response"];
+
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(" https://www.google.com/recaptcha/api/siteverify?secret=6LeZjmgeAAAAAHuwSxgvUdH9LDoRMdLMWR3Xd5Ki &response=" + response);
+            try
+            {
+                using(WebResponse webResponse = req.GetResponse())
+                {
+                    using(StreamReader sr = new StreamReader(webResponse.GetResponseStream()))
+                    {
+                        string jsonResponse = sr.ReadToEnd();
+
+
+                        JavaScriptSerializer js = new JavaScriptSerializer();
+
+                        MyObject jsonObject = js.Deserialize<MyObject>(jsonResponse);
+
+                        result = Convert.ToBoolean(jsonObject.success);
+
+                    }
+                }
+
+                return result;
+            }
+            catch(WebException ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

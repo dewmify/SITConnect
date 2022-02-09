@@ -5,8 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>SITConnect</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">  
-    <link rel="stylesheet" href="~/css/login.css">   
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>  
+    <link rel="stylesheet" href="~/css/login.css"/> 
+    <script src="https://www.google.com/recaptcha/api.js?render=6Ld-FWkeAAAAAAtAYQgDiYC_5X3ppTBPrEWIOMkI"></script>
 </head>
 <body>
     <nav class="navbar navbar-inverse">  
@@ -22,12 +23,12 @@
         <div>
         <fieldset>
         <legend>Login</legend>
-        <p>Username : <asp:TextBox ID ="tb_userid" runat="server" Height="25px" Width="137px" /></p>
-        <p>Password : <asp:TextBox ID="tb_pwd" runat="server" Height="24px" Width="137px" /></p>
+        <p>Email : <asp:TextBox ID ="tb_email" runat="server" Height="25px" Width="137px" /></p>
+        <p>Password : <asp:TextBox ID="tb_pwd" runat="server" type="password" Height="24px" Width="137px" /></p>
         <p><asp:Button ID ="btnSubmit" runat="server" Text="Login" OnClick="LoginMe" Height="27px" Width="133px" />
         <br />
         <br />
-        <asp:Label ID="lblMessage" runat="server" EnabledViewState="False"></asp:Label>
+        <asp:Label ID="lblMessage" runat="server" EnabledViewState="False" ForeColor="Red"></asp:Label>
         </p>
         </fieldset>
         </div>
