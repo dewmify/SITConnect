@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -65,6 +67,7 @@ namespace AppSecAsgn
                         lblMessage.ForeColor = Color.Green;
                         lblMessage.Text = "Password has been successfully!";
 
+                        hashNewPwd(Session["LoggedIn"].ToString());
                         ChangePasswordAuditLog();
                     }
                     else
@@ -109,6 +112,42 @@ namespace AppSecAsgn
             catch (Exception ex)
             {
                 throw new Exception(ex.ToString());
+            }
+        }
+
+        protected void hashNewPwd(string email)
+        {
+            using (SqlConnection con = new SqlConnection(MYDBConnectionString))
+            {
+                string sql = "update [Accounts] set [PasswordHash] = @PasswordHash, [PasswordSalt] = @PasswordSalt where Email = @EMAIL";
+                using (SqlCommand cmd = new SqlCommand(sql))
+                {
+                    using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter())
+                    {
+                        string pwd = changePwd.NewPassword.ToString();
+                        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                        byte[] saltByte = new byte[8];
+
+                        rng.GetBytes(saltByte);
+                        salt = Convert.ToBase64String(saltByte);
+                        SHA512Managed hash = new SHA512Managed();
+                        string newPwdWithSalt = pwd + salt;
+                        byte[] plainHash = hash.ComputeHash(Encoding.UTF8.GetBytes(pwd));
+                        byte[] hashWithSalt = hash.ComputeHash(Encoding.UTF8.GetBytes(newPwdWithSalt));
+                        finalHash = Convert.ToBase64String(hashWithSalt);
+
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
+                        cmd.Parameters.AddWithValue("@PasswordSalt", salt);
+                        cmd.Parameters.AddWithValue("@EMAIL", email);
+
+                        cmd.Connection = con;
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+
+                    }
+                }
             }
         }
     }

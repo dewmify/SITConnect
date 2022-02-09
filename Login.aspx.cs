@@ -243,7 +243,7 @@ namespace AppSecAsgn
             };
             var mailMessage = new MailMessage
             {
-                Subject = "Account Verification",
+                Subject = "2FA Login",
                 Body = "Dear User, your verification code is " + vcode + "\nThank you for using our website!"
             };
             mailMessage.To.Add(tb_email.Text.ToString());
