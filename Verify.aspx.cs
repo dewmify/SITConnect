@@ -56,7 +56,7 @@ namespace AppSecAsgn
 
         protected void VerifyCode(object sender, EventArgs e)
         {
-            if(tb_vfCode.Text.ToString() == vCodeOTP(Session["LoggedIn"].ToString()))
+            if(HttpUtility.HtmlEncode(tb_vfCode.Text.ToString()) == vCodeOTP(Session["LoggedIn"].ToString()))
             {
                 LoginAuditLog();
                 

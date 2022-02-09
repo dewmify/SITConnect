@@ -99,8 +99,8 @@ namespace AppSecAsgn
 
         protected void LoginMe(object sender, EventArgs e)
         {
-            string pwd = tb_pwd.Text.ToString().Trim();
-            string email = tb_email.Text.ToString().Trim();
+            string pwd = HttpUtility.HtmlEncode(tb_pwd.Text.ToString().Trim());
+            string email = HttpUtility.HtmlEncode(tb_email.Text.ToString().Trim());
             SHA512Managed hashing = new SHA512Managed();
             string dbHash = getDBHash(email);
             string dbSalt = getDBSalt(email);

@@ -52,7 +52,7 @@ namespace AppSecAsgn
                     {
                         using (SqlDataAdapter dataAdapter = new SqlDataAdapter())
                         {
-                            string pwd = changePwd.NewPassword.ToString();
+                            string pwd = HttpUtility.HtmlEncode(changePwd.NewPassword.ToString());
 
                             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
                             byte[] saltByte = new byte[8];

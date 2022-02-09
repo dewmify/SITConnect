@@ -29,7 +29,7 @@ namespace AppSecAsgn
 
         protected void btn_Submit_Click(object sender, EventArgs e)
         {
-            string pwd = tb_pwd.Text.ToString().Trim();
+            string pwd = HttpUtility.HtmlEncode(tb_pwd.Text.ToString().Trim());
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
             byte[] saltByte = new byte[8];
 
@@ -68,11 +68,11 @@ namespace AppSecAsgn
                         {
 
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@FirstName", tb_fname.Text.Trim());
-                            cmd.Parameters.AddWithValue("@LastName", tb_lname.Text.Trim());
+                            cmd.Parameters.AddWithValue("@FirstName", HttpUtility.HtmlEncode(tb_fname.Text.Trim()));
+                            cmd.Parameters.AddWithValue("@LastName", HttpUtility.HtmlEncode(tb_lname.Text.Trim()));
                             cmd.Parameters.AddWithValue("@CreditCard", Convert.ToBase64String(encryptData(tb_creditcard.Text.Trim())));
-                            cmd.Parameters.AddWithValue("@Email", tb_email.Text.Trim());
-                            cmd.Parameters.AddWithValue("@DOB", tb_dob.Text.Trim());
+                            cmd.Parameters.AddWithValue("@Email", HttpUtility.HtmlEncode(tb_email.Text.Trim()));
+                            cmd.Parameters.AddWithValue("@DOB", HttpUtility.HtmlEncode(tb_dob.Text.Trim()));
                             cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
                             cmd.Parameters.AddWithValue("@PasswordSalt", salt);
                             cmd.Parameters.AddWithValue("@IV", Convert.ToBase64String(IV));
