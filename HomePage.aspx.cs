@@ -15,11 +15,18 @@ namespace AppSecAsgn
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["LoggedIn"] != null)
+            if (Session["LoggedIn"] != null && Session["AuthToken"] != null && Request.Cookies["AuthToken"] != null)
             {
-                lblMessage.Text = "Congratulations!, you are logged in";
-                lblMessage.ForeColor = System.Drawing.Color.Green;
-                btnLogout.Visible = true;
+                if (!Session["AuthToken"].ToString().Equals(Request.Cookies["AuthToken"].Value))
+                {
+                    Response.Redirect("Login.aspx", false);
+                }
+                else
+                {
+                    lblMessage.Text = "Congratulations!, you are logged in";
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    btnLogout.Visible = true;
+                }
             }
             else
             {
