@@ -160,10 +160,7 @@ namespace AppSecAsgn
                                 Response.Redirect("Verify.aspx", false);
                             }
                             else
-                            {
-                                loginAttempts += 1;
-                                updateLoginAttempts(tb_email.Text.Trim(), loginAttempts);
-
+                            { 
                                 if (minLeft > 0)
                                 {
                                     lblMessage.Text = "You are still locked out, try again later in " + minLeft.ToString() + " minutes";
@@ -171,6 +168,8 @@ namespace AppSecAsgn
                                 }
                                 else
                                 {
+                                    loginAttempts += 1;
+                                    updateLoginAttempts(tb_email.Text.Trim(), loginAttempts);
                                     switch (loginAttempts)
                                     {
                                         case 1:
