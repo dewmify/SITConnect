@@ -181,6 +181,7 @@ namespace AppSecAsgn
                                             break;
                                         case 3:
                                             setLockoutDateTime(tb_email.Text.Trim(), DateTime.Now);
+                                            updateLoginAttempts(tb_email.Text, 0);
                                             lblMessage.Text = "Too many attempts. You have been locked out, try again later in " + minLeft.ToString() + " minutes";
                                             break;
                                     }
