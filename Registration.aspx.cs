@@ -70,7 +70,7 @@ namespace AppSecAsgn
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@FirstName", HttpUtility.HtmlEncode(tb_fname.Text.Trim()));
                             cmd.Parameters.AddWithValue("@LastName", HttpUtility.HtmlEncode(tb_lname.Text.Trim()));
-                            cmd.Parameters.AddWithValue("@CreditCard", Convert.ToBase64String(encryptData(tb_creditcard.Text.Trim())));
+                            cmd.Parameters.AddWithValue("@CreditCard", Convert.ToBase64String(encryptData(HttpUtility.HtmlEncode(tb_creditcard.Text.Trim()))));
                             cmd.Parameters.AddWithValue("@Email", HttpUtility.HtmlEncode(tb_email.Text.Trim()));
                             cmd.Parameters.AddWithValue("@DOB", HttpUtility.HtmlEncode(tb_dob.Text.Trim()));
                             cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
@@ -250,7 +250,7 @@ namespace AppSecAsgn
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@DateAndTime", DateTime.Now);
-                            cmd.Parameters.AddWithValue("@UserLog", tb_email.ToString());
+                            cmd.Parameters.AddWithValue("@UserLog", HttpUtility.HtmlEncode(tb_email.ToString()));
                             cmd.Parameters.AddWithValue("@ActionLog", "Has Successfully registered an account".ToString());
 
                             cmd.Connection = con;

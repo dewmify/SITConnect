@@ -69,6 +69,15 @@ namespace AppSecAsgn
         protected global::System.Web.UI.WebControls.TextBox tb_creditcard;
 
         /// <summary>
+        /// lbl_creditcardchecker control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl_creditcardchecker;
+
+        /// <summary>
         /// creditcard_validator control.
         /// </summary>
         /// <remarks>
@@ -85,6 +94,15 @@ namespace AppSecAsgn
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox tb_email;
+
+        /// <summary>
+        /// lbl_emailchecker control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbl_emailchecker;
 
         /// <summary>
         /// email_validator control.

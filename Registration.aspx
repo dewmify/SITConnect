@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>  
     <link rel="stylesheet" href="~/css/registration.css"/>
     <script type ="text/javascript">
-        function validate() {
+        function validatePwd() {
             var str = document.getElementById('<%=tb_pwd.ClientID%>').value;
             if (str.length < 8) {
                 document.getElementById("lbl_pwdchecker").innerHTML = "Password length Must be at least 8 characters";
@@ -40,6 +40,28 @@
             document.getElementById("lbl_pwdchecker").style.color = "Green";
 
         }
+
+        function validateCC() {
+            var str = document.getElementById('<%=tb_creditcard.ClientID %>').value;
+            if (str.search(/\d{16}/) == -1) {
+                document.getElementById("lbl_creditcardchecker").innerHTML = "Credit card number needs to be 16 digits";
+                document.getElementById("lbl_creditcardchecker").style.color = "Red";
+                return ('no_digits')
+            }
+            document.getElementById("lbl_creditcardchecker").innerHTML = "Valid credit card number format!"
+            document.getElementById("lbl_creditcardchecker").style.color = "Green";
+        }
+
+        function validateEmail() {
+            var str = document.getElementById('<%=tb_email.ClientID %>/*').value;
+            if (str.search(/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/) == -1) {
+                document.getElementById("lbl_emailchecker").innerHTML = "Please enter a valid email.";
+                document.getElementById("lbl_emailchecker").style.color = "Red";
+                return ('invalid_email')
+            }
+            document.getElementById("lbl_emailchecker").innerHTML = "Valid email!"
+            document.getElementById("lbl_emailchecker").style.color = "Green";
+        }
     </script>
 </head>
 <body>
@@ -60,7 +82,7 @@
             <tr>
                 <td class="auto-style2">First Name</td>
                 <td>
-                    <asp:TextBox ID="tb_fname" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="tb_fname" runat="server" ></asp:TextBox>
                     <br />
                     <asp:RequiredFieldValidator ID="fname_validator" runat="server" ControlToValidate="tb_fname" ErrorMessage="Enter your first name" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
@@ -68,7 +90,7 @@
             <tr>
                 <td class="auto-style2">Last Name</td>
                 <td>
-                    <asp:TextBox ID="tb_lname" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="tb_lname" runat="server" ></asp:TextBox>
                     <br />
                     <asp:RequiredFieldValidator ID="lname_validator" runat="server" ControlToValidate="tb_lname" ErrorMessage="Enter your last name" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
@@ -77,7 +99,7 @@
             <tr>
                 <td class="auto-style2">Credit Card Info</td>
                 <td>
-                    <asp:TextBox ID="tb_creditcard" runat="server"></asp:TextBox>
+                    <asp:TextBox ID="tb_creditcard" runat="server" onkeyup="javascript:validateCC()"></asp:TextBox> <asp:Label ID="lbl_creditcardchecker" runat="server" Text =""></asp:Label>
                     <br />
                 <asp:RequiredFieldValidator ID="creditcard_validator" runat="server" ControlToValidate="tb_creditcard" ErrorMessage="Enter your credit card details" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td> 
@@ -85,8 +107,9 @@
             <tr>
                 <td class="auto-style2">Email address</td>
                 <td>
-                    <asp:TextBox ID="tb_email" runat="server"></asp:TextBox>   
-                 <br />
+                    <asp:TextBox ID="tb_email" runat="server" onkeyup="javascript:validateEmail()"></asp:TextBox> <asp:Label ID="lbl_emailchecker" runat="server" Text =""></asp:Label>  
+                    <br />
+                 
                 <asp:RequiredFieldValidator ID="email_validator" runat="server" ControlToValidate="tb_email" ErrorMessage="Enter your email" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
                 
@@ -95,7 +118,7 @@
                 <td class="auto-style2">Password</td>
                 <td>
                     <p>
-                    <asp:TextBox ID="tb_pwd" runat="server" TextMode="Password" onkeyup="javascript:validate()"></asp:TextBox>
+                    <asp:TextBox ID="tb_pwd" runat="server" TextMode="Password" onkeyup="javascript:validatePwd()"></asp:TextBox>
                         <asp:Button ID="Button2" runat="server" Text="Check Password" Width="205px" OnClick="btn_checkPassword_Click" />
                      <asp:Label ID="lbl_pwdchecker" runat="server" Text=""></asp:Label>
                     </p>

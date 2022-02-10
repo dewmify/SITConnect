@@ -23,8 +23,10 @@
         <div>
         <fieldset>
         <legend>Login</legend>
-        <p>Email : <asp:TextBox ID ="tb_email" runat="server" Height="25px" Width="137px" /></p>
-        <p>Password : <asp:TextBox ID="tb_pwd" runat="server" type="password" Height="24px" Width="137px" /></p>
+        <p>Email : <asp:TextBox ID ="tb_email" runat="server" Height="25px" Width="137px" onkeyup="javascript:validateEmail()"/>
+        </p>
+        <p>Password : <asp:TextBox ID="tb_pwd" runat="server" type="password" Height="24px" Width="137px" onkeyup="javascript:validatePwd()"/>
+        </p>
         <p><asp:Button ID ="btnSubmit" runat="server" Text="Login" OnClick="LoginMe" Height="27px" Width="133px" />
         <br />
         <br />
